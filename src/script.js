@@ -4,7 +4,12 @@ import GUI from "lil-gui";
 import fragmentShader from "./shaders/test/fragment.glsl";
 import vertexShader from "./shaders/test/vertex.glsl";
 import { BufferAttribute } from "three";
-import image from "/assets/textures/Ground_Dirt_007_basecolor.jpg";
+import image from "/assets/particles/dirt_01.png";
+import Stats from "stats.js";
+
+const stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom);
 
 /**
  * Base
@@ -35,25 +40,31 @@ const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
 const count = geometry.attributes.position.count;
 
-const randoms = new Float32Array(count);
+const sizesAttribute = new Float32Array(count);
+const rotationAttribute = new Float32Array(count);
 
 for (let i = 0; i < count; i++) {
-  randoms[i] = Math.random();
+  sizesAttribute[i] = Math.random();
+  rotationAttribute[i] = Math.random() * Math.PI * 2;
 }
 
-geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
+geometry.setAttribute("aSize", new BufferAttribute(sizesAttribute, 1));
+geometry.setAttribute("aRotation", new BufferAttribute(rotationAttribute, 1));
 
 console.log(geometry.attributes);
 
 // Material
-const material = new THREE.RawShaderMaterial({
+const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
   side: THREE.DoubleSide,
+  transparent: true,
+  depthWrite: false,
   uniforms: {
     uFrequency: { value: new THREE.Vector2(10, 10) },
     uTime: { value: 0 },
     uTexture: { value: texture },
+    uParticleSize: { value: 3.0 },
   },
 });
 
@@ -71,10 +82,16 @@ gui
   .max(20)
   .step(0.01)
   .name("frequencyY");
+gui
+  .add(material.uniforms.uParticleSize, "value")
+  .min(1.0)
+  .max(10.0)
+  .step(0.1)
+  .name("particleSize");
 
 // Mesh
-const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
 /**
  * Sizes
@@ -130,6 +147,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 
 const tick = () => {
+  stats.begin();
+
   const elapsedTime = clock.getElapsedTime();
 
   // Update material
@@ -143,6 +162,7 @@ const tick = () => {
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
+  stats.end();
 };
 
 tick();
