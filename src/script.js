@@ -37,6 +37,7 @@ console.log(texture);
  */
 // Geometry
 const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+geometry.setIndex(null);
 
 const count = geometry.attributes.position.count;
 
