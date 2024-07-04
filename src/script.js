@@ -65,6 +65,7 @@ const material = new THREE.ShaderMaterial({
     uTime: { value: 0 },
     uTexture: { value: texture },
     uParticleSize: { value: 3.0 },
+    uParticleRotation: { value: 0.0 },
   },
 });
 
@@ -85,9 +86,15 @@ gui
 gui
   .add(material.uniforms.uParticleSize, "value")
   .min(1.0)
-  .max(10.0)
+  .max(20.0)
   .step(0.1)
   .name("particleSize");
+gui
+  .add(material.uniforms.uParticleRotation, "value")
+  .min(0.0)
+  .max(Math.PI * 2)
+  .step(0.1)
+  .name("particleRotation");
 
 // Mesh
 const points = new THREE.Points(geometry, material);

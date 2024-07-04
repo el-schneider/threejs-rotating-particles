@@ -1,4 +1,6 @@
 uniform sampler2D uTexture;
+uniform float uParticleRotation;
+
 varying vec2 vUv;
 varying float vRotation;
 
@@ -11,7 +13,7 @@ void main() {
     // Center the texture coordinates
     vec2 centeredCoord = gl_PointCoord - 0.5;
 
-    mat2 rotationMatrix = rotate2d(vRotation);
+    mat2 rotationMatrix = rotate2d(vRotation + uParticleRotation);
 
     // Apply rotation to the centered coordinates
     vec2 rotatedCoord = rotationMatrix * centeredCoord;
