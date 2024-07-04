@@ -1,16 +1,16 @@
-# Three.js Journey
+# Three.js Rotating, Scaling Particles
 
 ## Setup
-Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
+Download [Bun](https://bun.sh/).
+Run the followed commands:
 
 ``` bash
 # Install dependencies (only the first time)
-npm install
+bun install
 
-# Run the local server at localhost:8080
-npm run dev
+# Run the local server at localhost:5173
+bun run dev
 
 # Build for production in the dist/ directory
-npm run build
+bun run build
 ```
